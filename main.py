@@ -3,23 +3,33 @@ from rubka import Robot, Message
 
 TOKEN = os.getenv("BOT_TOKEN")
 
+if not TOKEN:
+    raise ValueError("BOT_TOKEN is not set")
+
 bot = Robot(token=TOKEN)
 
+
+@bot.on_message(commands=["start"])
+async def start(bot: Robot, message: Message):
+    await message.reply(
+        "سلام 👋\n\n"
+        "من ربات اکانت رایگان کالاف هستم 🎮\n\n"
+        "اگه اکانت رایگان کالاف میخوای، "
+        "کلمه «کالاف» رو بفرست."
+    )
+
+
 @bot.on_message()
-def handle_message(bot: Robot, message: Message):
+async def messages(bot: Robot, message: Message):
     text = (message.text or "").strip()
 
-    if text == "/start":
-        message.reply(
-            "سلام 👋\n\n"
-            "من ربات اکانت رایگان کالاف هستم 🎮\n\n"
-            "برای دریافت اکانت، کلمه «کالاف» رو بفرست."
+    if "کالاف" in text:
+        await message.reply(
+            "✅ درخواستت ثبت شد!\n\n"
+            "این بخش فعلاً آزمایشی است."
         )
 
-    elif "کالاف" in text:
-        message.reply(
-            "✅ درخواستت ثبت شد!\n\n"
-            "فعلاً این بخش تستی است."
-        )
+
+print("🤖 Rubika bot is starting...")
 
 bot.run()
