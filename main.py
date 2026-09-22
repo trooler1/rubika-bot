@@ -5,17 +5,22 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 from rubka import Robot
 from rubka.context import Message
 
+
 PORT = int(os.getenv("PORT", 10000))
 
 TOKEN = os.getenv("BOT_TOKEN")
 
 CHANNEL_LINK = "https://rubika.ir/AMIRTROOLER"
 
+# GUID کانال
 CHANNEL_GUID = "c0Dyv860ea2948530b600134bf21467a"
 
 
-# جلوگیری از خاموش شدن Render
-server = HTTPServer(("0.0.0.0", PORT), SimpleHTTPRequestHandler)
+# برای Render
+server = HTTPServer(
+    ("0.0.0.0", PORT),
+    SimpleHTTPRequestHandler
+)
 
 threading.Thread(
     target=server.serve_forever,
@@ -23,9 +28,14 @@ threading.Thread(
 ).start()
 
 
+if not TOKEN:
+    raise Exception("BOT_TOKEN تنظیم نشده است")
+
+
 bot = Robot(TOKEN)
 
 
+# ذخیره تعداد درخواست کاربران
 users = {}
 
 
@@ -39,64 +49,82 @@ async def main(bot, message: Message):
         users[user] = 0
 
 
-    # استارت
+    # شروع ربات
     if text == "/start":
 
         await message.reply(
-            "درود 👋\n\n"
-            "برای دریافت اکانت و سی پی رایگان "
-            "یکی از گزینه های زیر را بزنید >>>\n\n"
+            "درود 👋🔥\n\n"
+            "برای دریافت اکانت رایگان یا سی پی رایگان، "
+            "یکی از متن های زیر را تایپ کنید و برای بات ارسال کنید 👇\n\n"
             "🎁 اکانت رایگان\n"
-            "💎 سی پی رایگان"
+            "💎 سی پی رایگان\n\n"
+            "بعد از ارسال درخواست، مراحل دریافت برای شما نمایش داده می‌شود ✅"
         )
+
         return
 
 
+
+    # درخواست اکانت یا سی پی
     if text in ["اکانت رایگان", "سی پی رایگان"]:
 
         users[user] += 1
 
+        print("USER:", user)
+        print("REQUEST:", text)
+        print("TRY:", users[user])
+
+
+        # بررسی عضویت
         try:
             joined = await bot.check_join(
                 CHANNEL_GUID,
                 user
             )
-        except:
+
+        except Exception as e:
+            print("CHECK JOIN ERROR:", e)
             joined = False
 
 
-        if not joined:
 
-            if users[user] < 6:
+        if not joined and users[user] < 6:
 
-                await message.reply(
-                    "❌ هنوز عضو کانال نشدی\n\n"
-                    "اول عضو شو:\n"
-                    f"{CHANNEL_LINK}\n\n"
-                    f"تلاش {users[user]} از 6"
-                )
-                return
+            await message.reply(
+                "❌ هنوز عضو کانال نشدی\n\n"
+                "اول داخل کانال زیر عضو شو:\n\n"
+                f"{CHANNEL_LINK}\n\n"
+                f"تلاش شما: {users[user]} از 6"
+            )
+
+            return
 
 
-        # بعد از بار ششم
+
+        # بعد از 6 بار
         await message.reply(
             "🎉 درخواست شما تایید شد\n\n"
-            "اطلاعات تستی:\n\n"
+            "🎁 اطلاعات اکانت تستی:\n\n"
             "📧 Gmail:\n"
-            "test.account@example.com\n\n"
+            "test.account@gmail.com\n\n"
             "🔑 Password:\n"
             "Test123456\n\n"
-            "⚠️ این فقط اکانت آزمایشی است."
+            "⚠️ این اطلاعات فقط برای تست سیستم است."
         )
 
         return
 
 
+
+    # پیام های دیگر
+
     await message.reply(
-        "لطفا یکی از گزینه ها را انتخاب کن:\n\n"
+        "❌ دستور نامعتبر است\n\n"
+        "یکی از این ها را ارسال کن:\n\n"
         "🎁 اکانت رایگان\n"
         "💎 سی پی رایگان"
     )
+
 
 
 print("BOT STARTED")
