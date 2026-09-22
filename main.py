@@ -10,8 +10,8 @@ TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_GUID = os.getenv("CHANNEL_GUID")
 
 
+# جلوگیری از Sleep رندر
 server = HTTPServer(("0.0.0.0", PORT), SimpleHTTPRequestHandler)
-
 threading.Thread(
     target=server.serve_forever,
     daemon=True
@@ -21,28 +21,46 @@ threading.Thread(
 bot = Robot(token=TOKEN)
 
 
+async def is_member(user_id):
+
+    try:
+        members = await bot.get_channel_members(CHANNEL_GUID)
+
+        for member in members:
+            if member.get("user_guid") == user_id:
+                return True
+
+        return False
+
+    except Exception as e:
+        print("MEMBER CHECK ERROR:", e)
+        return False
+
+
+
 @bot.on_message()
 async def main(bot, message):
 
     user_id = message.chat_id
 
     print("USER:", user_id)
-    print("CHANNEL:", CHANNEL_GUID)
 
-    try:
-        print(
-            [
-                x for x in dir(bot)
-                if "member" in x.lower()
-                or "channel" in x.lower()
-                or "join" in x.lower()
-            ]
+    status = await is_member(user_id)
+
+    print("MEMBER:", status)
+
+
+    if status:
+        await message.reply(
+            "✅ عضویت شما تایید شد"
         )
 
-        await message.reply("تست انجام شد، لاگ را ببین")
-
-    except Exception as e:
-        print("ERROR:", e)
+    else:
+        await message.reply(
+            "❌ هنوز عضو کانال نیستید\n\n"
+            "ابتدا عضو شوید:\n"
+            "https://rubika.ir/AMIRTROOLER"
+        )
 
 
 print("BOT STARTED")
