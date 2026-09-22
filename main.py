@@ -22,7 +22,7 @@ if not CHANNEL_GUID:
 
 
 # =========================
-# وب‌سرور برای Render
+# وب‌سرور Render
 # =========================
 
 class HealthHandler(BaseHTTPRequestHandler):
@@ -48,53 +48,51 @@ threading.Thread(
 
 
 # =========================
-# ساخت ربات
+# ربات
 # =========================
 
 bot = Robot(token=TOKEN)
 
 
-# =========================
-# دستور /start
-# =========================
-
 @bot.on_message(commands=["start"])
 async def start(bot: Robot, message: Message):
 
+    print("START COMMAND FROM:", message.chat_id)
+
     try:
-        is_joined = bot.check_join(
+        joined = bot.check_join(
             CHANNEL_GUID,
             message.chat_id
         )
 
-        if is_joined:
+        print("CHECK JOIN RESULT:", joined)
+
+        if joined:
             await message.reply(
-                "✅ شما عضو کانال هستید.\n\n"
-                "خوش آمدید 🌹"
+                "✅ عضویت شما تأیید شد!\n\n"
+                "🎉 خوش آمدید."
             )
         else:
             await message.reply(
-                "❌ برای استفاده از ربات ابتدا باید عضو کانال شوید.\n\n"
-                "📢 کانال:\n"
+                "❌ شما هنوز عضو کانال نیستید.\n\n"
+                "📢 ابتدا عضو کانال شوید:\n"
                 "@AMIRTROOLER\n\n"
-                "بعد از عضویت دوباره /start را بفرستید."
+                "سپس دوباره /start را بفرستید."
             )
 
     except Exception as e:
-        print("CHECK JOIN ERROR:", e)
+        print("CHECK JOIN ERROR:", repr(e))
 
         await message.reply(
-            "⚠️ هنگام بررسی عضویت خطایی رخ داد.\n"
-            "لطفاً چند لحظه بعد دوباره تلاش کنید."
+            "⚠️ خطا در بررسی عضویت.\n"
+            "لطفاً دوباره تلاش کنید."
         )
 
 
-# =========================
-# اجرای ربات
-# =========================
-
+print("================================")
 print("BOT STARTED")
 print("CHANNEL GUID:", CHANNEL_GUID)
+print("================================")
 
 bot.run()
 ```
