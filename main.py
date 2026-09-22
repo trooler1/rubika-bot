@@ -11,7 +11,6 @@ if not TOKEN:
     raise ValueError("BOT_TOKEN is not set")
 
 
-# سرور ساده برای Render
 PORT = int(os.getenv("PORT", "10000"))
 
 
@@ -34,7 +33,6 @@ def start_web_server():
 threading.Thread(target=start_web_server, daemon=True).start()
 
 
-# Rubika bot
 bot = Robot(token=TOKEN)
 
 
