@@ -1,12 +1,17 @@
 import os
 import threading
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+
 from rubka import Robot
 
 PORT = int(os.getenv("PORT", 10000))
 
 TOKEN = os.getenv("BOT_TOKEN")
 
+CHANNEL_GUID = "c0Dyv860ea2948530b600134bf21467a"
+
+
+# جلوگیری از خاموش شدن Render
 server = HTTPServer(("0.0.0.0", PORT), SimpleHTTPRequestHandler)
 
 threading.Thread(
@@ -15,25 +20,44 @@ threading.Thread(
 ).start()
 
 
-bot = Robot(token=TOKEN)
+bot = Robot(CFBHCI0LKDIFPBBKTBAJNUWQFYZYCUJWEBHYHVNFOGCTZOXNSJTQOAGXSBWDXVGK)
 
 
 @bot.on_message()
-def test(bot, message):
+async def check_member(bot, message):
 
-    print("========== NEW MESSAGE ==========")
-    print("CHAT ID:", message.chat_id)
+    user_id = message.chat_id
+
+    print("----------------")
+    print("USER:", user_id)
+    print("CHANNEL:", CHANNEL_GUID)
 
     try:
-        print("FULL MESSAGE:")
-        print(message)
+        result = bot.check_join(
+            CHANNEL_GUID,
+            user_id
+        )
+
+        print("RESULT:", result)
+
+        if result:
+            await message.reply(
+                "✅ عضویت شما تایید شد"
+            )
+
+        else:
+            await message.reply(
+                "❌ شما هنوز عضو کانال نیستید\n\n"
+                "ابتدا عضو شوید:\n"
+                "https://rubika.ir/AMIRTROOLER"
+            )
 
     except Exception as e:
-        print("ERROR:", e)
+        print("ERROR:", repr(e))
 
-    message.reply(
-        "آیدی دریافت شد:\n" + str(message.chat_id)
-    )
+        await message.reply(
+            "⚠️ خطا در بررسی عضویت"
+        )
 
 
 print("BOT STARTED")
