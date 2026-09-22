@@ -11,6 +11,7 @@ CHANNEL_GUID = os.getenv("CHANNEL_GUID")
 
 
 server = HTTPServer(("0.0.0.0", PORT), SimpleHTTPRequestHandler)
+
 threading.Thread(
     target=server.serve_forever,
     daemon=True
@@ -23,36 +24,25 @@ bot = Robot(token=TOKEN)
 @bot.on_message()
 async def main(bot, message):
 
+    user_id = message.chat_id
+
+    print("USER:", user_id)
+    print("CHANNEL:", CHANNEL_GUID)
+
     try:
-        user_id = message.chat_id
-
-        print("USER:", user_id)
-        print("CHANNEL:", CHANNEL_GUID)
-
-        result = await bot.check_join(
-            CHANNEL_GUID,
-            user_id
+        print(
+            [
+                x for x in dir(bot)
+                if "member" in x.lower()
+                or "channel" in x.lower()
+                or "join" in x.lower()
+            ]
         )
 
-        print("JOIN RESULT:", result)
-
-        if result:
-            await message.reply(
-                "✅ عضویت شما تایید شد"
-            )
-        else:
-            await message.reply(
-                "❌ شما عضو کانال نیستید\n\n"
-                "اول عضو شوید:\n"
-                "https://rubika.ir/AMIRTROOLER"
-            )
+        await message.reply("تست انجام شد، لاگ را ببین")
 
     except Exception as e:
-        print("ERROR:", repr(e))
-
-        await message.reply(
-            "خطا در بررسی عضویت"
-        )
+        print("ERROR:", e)
 
 
 print("BOT STARTED")
