@@ -20,7 +20,7 @@ threading.Thread(
 ).start()
 
 
-bot = Robot(CFBHCI0LKDIFPBBKTBAJNUWQFYZYCUJWEBHYHVNFOGCTZOXNSJTQOAGXSBWDXVGK)
+bot = Robot(token=TOKEN)
 
 
 @bot.on_message()
