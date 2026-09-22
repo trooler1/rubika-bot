@@ -10,11 +10,9 @@ CHANNEL_GUID = os.getenv("CHANNEL_GUID", "")
 server = HTTPServer(("0.0.0.0", PORT), SimpleHTTPRequestHandler)
 threading.Thread(target=server.serve_forever, daemon=True).start()
 
-print("PORT OK")
-print("TOKEN OK:", bool(TOKEN))
-print("CHANNEL OK:", bool(CHANNEL_GUID))
-
 bot = Robot(token=TOKEN)
 
-print("BOT CREATED")
+bot.on_message(commands=["start"])(lambda bot, message: message.reply("✅ شما عضو کانال هستید!" if bot.check_join(CHANNEL_GUID, message.chat_id) else "❌ شما عضو کانال نیستید!\n\nابتدا در کانال @AMIRTROOLER عضو شوید و دوباره /start را بزنید."))
+
+print("BOT STARTED")
 bot.run()
