@@ -1,5 +1,7 @@
+```python
 import os
 from rubka import Robot, Message
+from rubka.keypad import Keypad, Button
 
 TOKEN = os.getenv("BOT_TOKEN")
 
@@ -11,11 +13,22 @@ bot = Robot(token=TOKEN)
 
 @bot.on_message(commands=["start"])
 async def start(bot: Robot, message: Message):
+    keypad = Keypad(
+        rows=[
+            [
+                Button(text="🎮 اکانت رایگان کالاف"),
+            ],
+            [
+                Button(text="📢 کانال ما"),
+            ]
+        ]
+    )
+
     await message.reply(
-        "سلام 👋\n\n"
-        "من ربات اکانت رایگان کالاف هستم 🎮\n\n"
-        "اگه اکانت رایگان کالاف میخوای، "
-        "کلمه «کالاف» رو بفرست."
+        "درود بر شما 🌹\n\n"
+        "خیلی خوش آمدید ❤️\n\n"
+        "لطفاً یک گزینه را انتخاب کنید 👇",
+        keypad=keypad
     )
 
 
@@ -23,13 +36,20 @@ async def start(bot: Robot, message: Message):
 async def messages(bot: Robot, message: Message):
     text = (message.text or "").strip()
 
-    if "کالاف" in text:
+    if text == "🎮 اکانت رایگان کالاف":
         await message.reply(
-            "✅ درخواستت ثبت شد!\n\n"
-            "این بخش فعلاً آزمایشی است."
+            "🎮 اکانت رایگان کالاف\n\n"
+            "این بخش به‌زودی فعال می‌شود."
+        )
+
+    elif text == "📢 کانال ما":
+        await message.reply(
+            "📢 کانال ما\n\n"
+            "لینک کانال به‌زودی اضافه می‌شود."
         )
 
 
 print("🤖 Rubika bot is starting...")
 
 bot.run()
+```
