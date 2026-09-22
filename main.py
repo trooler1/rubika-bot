@@ -1,7 +1,6 @@
 import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
-
 from rubka import Robot, Message
 
 TOKEN = os.getenv("BOT_TOKEN")
@@ -39,10 +38,9 @@ bot = Robot(token=TOKEN)
 
 @bot.on_message(commands=["start"])
 async def start(bot: Robot, message: Message):
-
-```
 print("START COMMAND FROM:", message.chat_id)
 
+```
 try:
     joined = bot.check_join(
         CHANNEL_GUID,
