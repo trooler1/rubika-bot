@@ -12,7 +12,11 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 
 bot = Robot(token=TOKEN)
 
-bot.on_message(commands=["start"])(lambda bot, message: message.reply("✅ شما عضو کانال هستید!" if bot.check_join(CHANNEL_GUID, message.chat_id) else "❌ شما عضو کانال نیستید!\n\nابتدا در کانال @AMIRTROOLER عضو شوید و دوباره /start را بزنید."))
+def test_join(bot, message):
+result = bot.check_join(CHANNEL_GUID, message.chat_id)
+message.reply("RESULT = " + repr(result) + "\nCHAT_ID = " + str(message.chat_id) + "\nCHANNEL = " + CHANNEL_GUID)
+
+bot.on_message(commands=["start"])(test_join)
 
 print("BOT STARTED")
 bot.run()
