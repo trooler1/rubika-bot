@@ -1,38 +1,29 @@
 import os
 import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from rubka import Robot, Message
 
-TOKEN = os.getenv("BOT_TOKEN")
-CHANNEL_GUID = os.getenv("CHANNEL_GUID")
+TOKEN = os.getenv("BOT_TOKEN", "")
+CHANNEL_GUID = os.getenv("CHANNEL_GUID", "")
 PORT = int(os.getenv("PORT", "10000"))
 
-TOKEN = TOKEN or ""
-CHANNEL_GUID = CHANNEL_GUID or ""
+server = HTTPServer(
+("0.0.0.0", PORT),
+BaseHTTPRequestHandler
+)
 
-class HealthHandler(BaseHTTPRequestHandler):
-def do_GET(self):
-self.send_response(200)
-self.end_headers()
-self.wfile.write(b"OK")
+threading.Thread(
+target=server.serve_forever,
+daemon=True
+).start()
 
-```
-def log_message(self, format, *args):
-    pass
-```
-
-def start_web_server():
-server = HTTPServer(("0.0.0.0", PORT), HealthHandler)
-print("WEB SERVER STARTED ON PORT", PORT)
-server.serve_forever()
-
-threading.Thread(target=start_web_server, daemon=True).start()
+print("WEB SERVER STARTED")
 
 bot = Robot(token=TOKEN)
 
 @bot.on_message(commands=["start"])
-async def start(bot: Robot, message: Message):
-print("START COMMAND FROM:", message.chat_id)
+async def start(bot, message):
+print("START COMMAND:", message.chat_id)
 
 ```
 joined = bot.check_join(
@@ -40,25 +31,17 @@ joined = bot.check_join(
     message.chat_id
 )
 
-print("CHECK JOIN RESULT:", joined)
+print("JOIN RESULT:", joined)
 
-text = (
-    "✅ عضویت شما تأیید شد!\n\n"
-    "🎉 خوش آمدید."
+await message.reply(
+    "✅ عضویت شما تأیید شد!\n\n🎉 خوش آمدید."
     if joined
     else
-    "❌ شما هنوز عضو کانال نیستید.\n\n"
-    "📢 ابتدا عضو کانال شوید:\n"
-    "@AMIRTROOLER\n\n"
-    "بعد از عضویت دوباره /start را بفرستید."
+    "❌ شما عضو کانال نیستید.\n\n📢 ابتدا عضو شوید:\n@AMIRTROOLER\n\nبعد دوباره /start بفرستید."
 )
-
-await message.reply(text)
 ```
 
-print("================================")
 print("BOT STARTED")
-print("CHANNEL GUID:", CHANNEL_GUID)
-print("================================")
+print("CHANNEL:", CHANNEL_GUID)
 
 bot.run()
