@@ -45,7 +45,7 @@ async def main(bot, message: Message):
         await message.reply(
             "درود 👋\n\n"
             "برای دریافت اکانت و سی پی رایگان "
-            "یکی از گزینه های زیر را تایپ کنید و برای بات ارسال کنید >>>\n\n"
+            "یکی از گزینه های زیر را بزنید >>>\n\n"
             "🎁 اکانت رایگان\n"
             "💎 سی پی رایگان"
         )
@@ -86,7 +86,7 @@ async def main(bot, message: Message):
             "test.account@example.com\n\n"
             "🔑 Password:\n"
             "Test123456\n\n"
-            "."
+            "⚠️ این فقط اکانت آزمایشی است."
         )
 
         return
