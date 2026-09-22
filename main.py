@@ -1,30 +1,22 @@
 import os
-
-from rubka import Robot, Message
+import requests
 
 TOKEN = os.getenv("BOT_TOKEN")
 
 if not TOKEN:
     raise ValueError("BOT_TOKEN is not set")
 
-bot = Robot(token=TOKEN)
+username = "AMIRTROOLER"
 
+url = f"https://botapi.rubika.ir/v3/{TOKEN}/getObjectByUsername"
 
-@bot.on_message()
-async def get_channel_id(bot: Robot, message: Message):
+response = requests.post(
+    url,
+    json={
+        "username": username
+    }
+)
 
-    if message.is_channel:
-        print("================================")
-        print("CHANNEL GUID:")
-        print(message.chat_id)
-        print("================================")
-
-        await message.reply(
-            "✅ شناسه کانال دریافت شد.\n"
-            "حالا Render Logs رو باز کن."
-        )
-
-
-print("🤖 Bot is running...")
-
-bot.run()
+print("STATUS:", response.status_code)
+print("RESULT:")
+print(response.text)
