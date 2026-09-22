@@ -12,11 +12,7 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 
 bot = Robot(token=TOKEN)
 
-def test(bot, message):
-methods = [x for x in dir(bot) if "member" in x.lower() or "channel" in x.lower()]
-message.reply("متدهای پیدا شده:\n" + "\n".join(methods))
-
-bot.on_message(commands=["start"])(test)
+bot.on_message(commands=["start"])(lambda bot, message: message.reply("METHODS:\n" + "\n".join([x for x in dir(bot) if "member" in x.lower() or "channel" in x.lower()])))
 
 print("BOT STARTED")
 bot.run()
