@@ -12,11 +12,11 @@ threading.Thread(target=server.serve_forever, daemon=True).start()
 
 bot = Robot(token=TOKEN)
 
-def test_join(bot, message):
-result = bot.check_join(CHANNEL_GUID, message.chat_id)
-message.reply("RESULT = " + repr(result) + "\nCHAT_ID = " + str(message.chat_id) + "\nCHANNEL = " + CHANNEL_GUID)
+def test(bot, message):
+methods = [x for x in dir(bot) if "member" in x.lower() or "channel" in x.lower()]
+message.reply("متدهای پیدا شده:\n" + "\n".join(methods))
 
-bot.on_message(commands=["start"])(test_join)
+bot.on_message(commands=["start"])(test)
 
 print("BOT STARTED")
 bot.run()
